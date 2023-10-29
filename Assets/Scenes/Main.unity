@@ -956,7 +956,7 @@ MonoBehaviour:
     type: 3}
   SpawnRate: 0.05
   MaxParticles: 250
-  SizeRange: {x: 0.25, y: 0.4}
+  SizeRange: {x: 0.25, y: 0.3}
 --- !u!1 &355267189
 GameObject:
   m_ObjectHideFlags: 0

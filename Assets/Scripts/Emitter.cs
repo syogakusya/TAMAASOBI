@@ -26,6 +26,7 @@ public class Emitter : MonoBehaviour
         {
             var particle = Instantiate(SpawnPrefab);
             particle.SetActive(false);
+            particle.GetComponent<MeshRenderer>().material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
             pool[i] = particle;
         }
     }
