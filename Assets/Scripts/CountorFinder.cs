@@ -45,8 +45,8 @@ public class CountorFinder : WebCamera
 
 
     //ƒeƒXƒg
-    string shapeName = "THISAREA";
-    [SerializeField] public int CountourLength = 20;
+    //string shapeName = "THISAREA";
+    //[SerializeField] public int CountourLength = 20;
     //
 
     protected override bool ProcessTexture(WebCamTexture input, ref Texture2D output)
@@ -88,18 +88,18 @@ public class CountorFinder : WebCamera
                 PolygonCollider.SetPath(PolygonCollider.pathCount - 1, toVector2(points));
             }
 
-            if (points.Length > CountourLength)
-            {
-                if (shapeName != null)
-                {
-                    Moments m = Cv2.Moments(contour);
-                    int cx = (int)(m.M10 / m.M00);
-                    int cy = (int)(m.M01 / m.M00);
+            //if (points.Length > CountourLength)
+            //{
+            //    if (shapeName != null)
+            //    {
+            //        Moments m = Cv2.Moments(contour);
+            //        int cx = (int)(m.M10 / m.M00);
+            //        int cy = (int)(m.M01 / m.M00);
 
-                    //Cv2.DrawContours(image, new Point[][] { contour }, 0, new Scalar(0,0,0), -1);
-                    Cv2.PutText(image, shapeName, new Point(cx - 50, cy), HersheyFonts.HersheySimplex, 1.0, new Scalar(0, 0, 0));
-                }
-            }
+            //        //Cv2.DrawContours(image, new Point[][] { contour }, 0, new Scalar(0,0,0), -1);
+            //        Cv2.PutText(image, shapeName, new Point(cx - 50, cy), HersheyFonts.HersheySimplex, 1.0, new Scalar(0, 0, 0));
+            //    }
+            //}
         }
 
 

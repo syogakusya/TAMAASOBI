@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,10 +37,34 @@ public class DropdownShowImage : MonoBehaviour
         MinArea.value = CountorValueSetter.MinArea;
     }
 
+    bool pushFlag1 = false;
+    bool pushFlag2 = false;
     private void Update()
     {
         if (Input.GetKey(KeyCode.O)){
-            opCanvas.SetActive(!opCanvas.activeSelf);
+            if(pushFlag1 == false)
+            {
+                pushFlag1 = true;
+                opCanvas.SetActive(!opCanvas.activeSelf);
+            }
+        }
+        else
+        {
+            pushFlag1 = false;
+        }
+
+        if (Input.GetKey(KeyCode.I))
+        {
+            if (pushFlag2 == false)
+            {
+                pushFlag2 = true;
+                maincam.SetActive(!maincam.activeSelf);
+                optioncam.SetActive(!optioncam.activeSelf);
+            }
+        }
+        else
+        {
+            pushFlag2 = false;
         }
     }
 
