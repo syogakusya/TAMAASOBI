@@ -146,12 +146,12 @@ public class CountorFinder : WebCamera
 
     private int VectorToMatposX(float pos)
     {
-        return Mathf.RoundToInt((pos * scale) + GetComponent<RectTransform>().sizeDelta.x / 2);
+        return (int)((pos * scale) + GetComponent<RectTransform>().sizeDelta.x / 2);
     }
 
     private int VectorToMatposY(float pos)
     {
-        return Mathf.RoundToInt(-(pos * scale) + GetComponent<RectTransform>().sizeDelta.y / 2 + 1.5f);
+        return (int)(-(pos * scale) + GetComponent<RectTransform>().sizeDelta.y / 2 + 1.5f);
     }
 
     private void drawKeystone(Mat input)
@@ -180,18 +180,28 @@ public class CountorFinder : WebCamera
         }
     }
 
+    private float rectX;
+    private float rectY;
+
+
+    private void Start()
+    {
+        rectX = GetComponent<RectTransform>().sizeDelta.x;
+        rectY = GetComponent<RectTransform>().sizeDelta.y;
+    }
+
     private void transformKeystone(Mat input)
     {
         drawKeystone(input);
 
         if (ShowConvertImage == true)
         {
-            _LeftUp = new Point2f((LeftUp.transform.position.x * scale) + GetComponent<RectTransform>().sizeDelta.x / 2, -(LeftUp.transform.position.y * scale) + GetComponent<RectTransform>().sizeDelta.y / 2);
-            _LeftDown = new Point2f((LeftDown.transform.position.x * scale) + GetComponent<RectTransform>().sizeDelta.x / 2, -(LeftDown.transform.position.y * scale) + GetComponent<RectTransform>().sizeDelta.y / 2);
-            _RightUp = new Point2f((RightUp.transform.position.x * scale) + GetComponent<RectTransform>().sizeDelta.x / 2, -(RightUp.transform.position.y * scale) + GetComponent<RectTransform>().sizeDelta.y / 2);
-            _RightDown = new Point2f((RightDown.transform.position.x * scale) + GetComponent<RectTransform>().sizeDelta.x / 2, -(RightDown.transform.position.y * scale) + GetComponent<RectTransform>().sizeDelta.y / 2);
+            _LeftUp = new Point2f((LeftUp.transform.position.x * scale) + rectX / 2, -(LeftUp.transform.position.y * scale) + rectY / 2); 
+            _LeftDown = new Point2f((LeftDown.transform.position.x * scale) + rectX / 2, -(LeftDown.transform.position.y * scale) + rectY / 2);
+            _RightUp = new Point2f((RightUp.transform.position.x * scale) + rectX / 2, -(RightUp.transform.position.y * scale) + rectY / 2);
+            _RightDown = new Point2f((RightDown.transform.position.x * scale) + rectX / 2, -(RightDown.transform.position.y * scale) + rectY / 2);
 
-            var edjePoints = new Point2f[]
+            Point2f[] edjePoints = new Point2f[]
                 {
                     _LeftUp,
                     _LeftDown,
