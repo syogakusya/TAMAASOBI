@@ -114,7 +114,7 @@ namespace OpenCvSharp.Demo
 				DeviceName = WebCamTexture.devices[WebCamTexture.devices.Length - 1].name;
 		}
 
-		void OnDestroy() 
+		void OnDestroy()
 		{
 			if (webCamTexture != null)
 			{
@@ -125,7 +125,7 @@ namespace OpenCvSharp.Demo
 				webCamTexture = null;
 			}
 
-			if (webCamDevice != null) 
+			if (webCamDevice != null)
 			{
 				webCamDevice = null;
 			}

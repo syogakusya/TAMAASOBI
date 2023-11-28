@@ -1,8 +1,5 @@
 using OpenCvSharp;
 using OpenCvSharp.Demo;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CountorFinder : WebCamera
@@ -20,7 +17,7 @@ public class CountorFinder : WebCamera
     }
     [SerializeField] public  ShowProcessingImage showProcessingImage;
     [SerializeField] public bool ShowKeystoneCorrection = false;
-    [SerializeField] public bool ShowConvertImage = false;
+    [SerializeField] public bool ShowConvertImage = true;
     
     [SerializeField] private GameObject LeftUp;
     [SerializeField] private GameObject LeftDown;
@@ -28,8 +25,8 @@ public class CountorFinder : WebCamera
     [SerializeField] private GameObject RightDown;
 
 
-    private float aveWidth = 2560;
-    private float aveHeight = 1440;
+    private float aveWidth = 1280;
+    private float aveHeight = 720;
     private float scale = 125;
     private Mat image;
     private Mat processImage = new Mat();
@@ -57,7 +54,7 @@ public class CountorFinder : WebCamera
 
         Cv2.Flip(image, image, ImageFlip);
 
-        transformKeystone(image);
+        DrawAndTransformKeystone(image);
 
         if (ShowConvertImage == true)
         {
@@ -144,18 +141,33 @@ public class CountorFinder : WebCamera
         return null;
     }
 
-    private int VectorToMatposX(float pos)
+    private int VectorToMatposX(float pos, Vector2 Size)
     {
-        return Mathf.RoundToInt((pos * scale) + GetComponent<RectTransform>().sizeDelta.x / 2);
+        return Mathf.RoundToInt((pos * scale) + Size.x / 2);
     }
 
-    private int VectorToMatposY(float pos)
+    private int VectorToMatposY(float pos, Vector2 Size)
     {
-        return Mathf.RoundToInt(-(pos * scale) + GetComponent<RectTransform>().sizeDelta.y / 2 + 1.5f);
+        return Mathf.RoundToInt(-(pos * scale) + Size.y / 2 + 1.5f);
     }
 
-    private void drawKeystone(Mat input)
+
+    Scalar KeyStoneColor = new Scalar(0, 255, 0);
+    Vector2 rectSize;
+    Vector3 lUpos;
+    Vector3 lDpos;
+    Vector3 rUpos;
+    Vector3 rDpos;
+
+    private void DrawAndTransformKeystone(Mat input)
     {
+        rectSize = GetComponent<RectTransform>().sizeDelta;
+        lUpos = LeftUp.transform.position;
+        lDpos = LeftDown.transform.position;
+        rUpos = RightUp.transform.position;
+        rDpos = RightDown.transform.position;
+        
+
         LeftUp.SetActive(false);
         RightUp.SetActive(false);
         LeftDown.SetActive(false);
@@ -168,28 +180,23 @@ public class CountorFinder : WebCamera
             LeftDown.SetActive(true);
             RightDown.SetActive(true);
 
-            Cv2.Circle(input, VectorToMatposX(LeftUp.transform.position.x), VectorToMatposY(LeftUp.transform.position.y), 20, new Scalar(0, 255, 0), -1);
-            Cv2.Circle(input, VectorToMatposX(LeftDown.transform.position.x), VectorToMatposY(LeftDown.transform.position.y), 20, new Scalar(0, 255, 0), -1);
-            Cv2.Circle(input, VectorToMatposX(RightUp.transform.position.x), VectorToMatposY(RightUp.transform.position.y), 20, new Scalar(0, 255, 0), -1);
-            Cv2.Circle(input, VectorToMatposX(RightDown.transform.position.x), VectorToMatposY(RightDown.transform.position.y), 20, new Scalar(0, 255, 0), -1);
+            Cv2.Circle(input, VectorToMatposX(lUpos.x, rectSize), VectorToMatposY(lUpos.y, rectSize), 20, KeyStoneColor, -1);
+            Cv2.Circle(input, VectorToMatposX(lDpos.x, rectSize), VectorToMatposY(lDpos.y, rectSize), 20, KeyStoneColor, -1);
+            Cv2.Circle(input, VectorToMatposX(rUpos.x, rectSize), VectorToMatposY(rUpos.y, rectSize), 20, KeyStoneColor, -1);
+            Cv2.Circle(input, VectorToMatposX(rDpos.x, rectSize), VectorToMatposY(rDpos.y, rectSize), 20, KeyStoneColor, -1);
 
-            Cv2.Line(input, VectorToMatposX(LeftUp.transform.position.x), VectorToMatposY(LeftUp.transform.position.y), VectorToMatposX(LeftDown.transform.position.x), VectorToMatposY(LeftDown.transform.position.y), new Scalar(0, 255, 0), 3);
-            Cv2.Line(input, VectorToMatposX(LeftDown.transform.position.x), VectorToMatposY(LeftDown.transform.position.y), VectorToMatposX(RightDown.transform.position.x), VectorToMatposY(RightDown.transform.position.y), new Scalar(0, 255, 0), 3);
-            Cv2.Line(input, VectorToMatposX(RightDown.transform.position.x), VectorToMatposY(RightDown.transform.position.y), VectorToMatposX(RightUp.transform.position.x), VectorToMatposY(RightUp.transform.position.y), new Scalar(0, 255, 0), 3);
-            Cv2.Line(input, VectorToMatposX(RightUp.transform.position.x), VectorToMatposY(RightUp.transform.position.y), VectorToMatposX(LeftUp.transform.position.x), VectorToMatposY(LeftUp.transform.position.y), new Scalar(0, 255, 0), 3);
+            Cv2.Line(input, VectorToMatposX(lUpos.x, rectSize), VectorToMatposY(lUpos.y, rectSize), VectorToMatposX(lDpos.x, rectSize), VectorToMatposY(lDpos.y, rectSize), KeyStoneColor, 3);
+            Cv2.Line(input, VectorToMatposX(lDpos.x, rectSize), VectorToMatposY(lDpos.y, rectSize), VectorToMatposX(rDpos.x, rectSize), VectorToMatposY(rDpos.y, rectSize), KeyStoneColor, 3);
+            Cv2.Line(input, VectorToMatposX(rDpos.x, rectSize), VectorToMatposY(rDpos.y, rectSize), VectorToMatposX(rUpos.x, rectSize), VectorToMatposY(rUpos.y, rectSize), KeyStoneColor, 3);
+            Cv2.Line(input, VectorToMatposX(rUpos.x, rectSize), VectorToMatposY(rUpos.y, rectSize), VectorToMatposX(lUpos.x, rectSize), VectorToMatposY(lUpos.y, rectSize), KeyStoneColor, 3);
         }
-    }
-
-    private void transformKeystone(Mat input)
-    {
-        drawKeystone(input);
 
         if (ShowConvertImage == true)
         {
-            _LeftUp = new Point2f((LeftUp.transform.position.x * scale) + GetComponent<RectTransform>().sizeDelta.x / 2, -(LeftUp.transform.position.y * scale) + GetComponent<RectTransform>().sizeDelta.y / 2);
-            _LeftDown = new Point2f((LeftDown.transform.position.x * scale) + GetComponent<RectTransform>().sizeDelta.x / 2, -(LeftDown.transform.position.y * scale) + GetComponent<RectTransform>().sizeDelta.y / 2);
-            _RightUp = new Point2f((RightUp.transform.position.x * scale) + GetComponent<RectTransform>().sizeDelta.x / 2, -(RightUp.transform.position.y * scale) + GetComponent<RectTransform>().sizeDelta.y / 2);
-            _RightDown = new Point2f((RightDown.transform.position.x * scale) + GetComponent<RectTransform>().sizeDelta.x / 2, -(RightDown.transform.position.y * scale) + GetComponent<RectTransform>().sizeDelta.y / 2);
+            _LeftUp = new Point2f((lUpos.x * scale) + rectSize.x / 2, -(lUpos.y * scale) + rectSize.y / 2);
+            _LeftDown = new Point2f((lDpos.x * scale) + rectSize.x / 2, -(lDpos.y * scale) + rectSize.y / 2);
+            _RightUp = new Point2f((rUpos.x * scale) + rectSize.x / 2, -(rUpos.y * scale) + rectSize.y / 2);
+            _RightDown = new Point2f((rDpos.x * scale) + rectSize.x / 2, -(rDpos.y * scale) + rectSize.y / 2);
 
             var edjePoints = new Point2f[]
                 {
